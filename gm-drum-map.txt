@@ -1,0 +1,47 @@
+35 - 	
+36 ADK 	
+37 Side Stick 	 	
+38 Snare Hit	 	
+39 Hand Clap 	
+40 -
+41 Floor Tom 2	
+42 HH Tip Closed
+43 High Floor Tom 	
+44 HH Pedal 	
+45 Floor Tom 1
+46 HH Open 1 	
+47 Rack Tom 3 	
+48 Rack Tom 2 	
+49 Main Crash L Hit 	
+50 High Tom 	
+51 Ride Hit	
+52 China R Hit 	
+53 Ride Hit  	
+54 Tambourine 	
+55 Splash L Hit
+56 Cowbell 	
+57 Main Crash R Hit	
+58 Vibraslap
+59 Ride Edge
+60 Hi Bongo
+61 Low Bongo
+62 Mute Hi Conga
+63 Open Hi Conga
+64 Low Conga
+65 High Timbale
+66 Low Timbale
+67 High Agogo
+68 Low Agogo
+69 Cabasa
+70 Maracas
+71 Short Whistle
+72 Long Whistle
+73 Short Guiro
+74 Long Guiro
+75 Claves
+76 Hi Wood Block
+77 Low Wood Block
+78 Mute Cuica
+79 Open Cuica
+80 Mute Triangle
+81 Open Triangle
