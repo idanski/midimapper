@@ -4,6 +4,14 @@ use anyhow::{Context, Result};
 use midly::num::u7;
 use regex::Regex;
 
+fn clean_note_name(note_name: &str) -> String {
+    note_name
+        .to_string()
+        .to_lowercase()
+        .split_whitespace()
+        .collect()
+}
+
 pub fn load_file_to_map(filepath: &PathBuf) -> Result<HashMap<String, u7>> {
     let data: Vec<String> = fs::read_to_string(filepath)?
         .lines()
@@ -25,7 +33,7 @@ pub fn load_file_to_map(filepath: &PathBuf) -> Result<HashMap<String, u7>> {
 
         let val = capture["val"].parse::<u8>()?;
         let val = u7::try_from(val).context("failed converting value to u7")?;
-        result.insert(note_name.to_string(), val);
+        result.insert(clean_note_name(note_name), val);
     }
 
     Ok(result)

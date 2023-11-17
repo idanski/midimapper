@@ -23,10 +23,6 @@ struct Args {
     #[arg(short, long)]
     output_map_path: Option<PathBuf>,
 
-    /// Channel name to convert
-    // #[arg(short, long)]
-    // drum_channel_name: Option<String>,
-
     /// Channel number to convert
     #[arg(short = 'n', long)]
     track_number: Option<usize>,
@@ -34,7 +30,6 @@ struct Args {
 
 fn main() {
     let args = Args::parse();
-
     let input = fs::read(&args.input_filepath).unwrap();
 
     let mut smf = Smf::parse(&input).unwrap();
@@ -49,11 +44,11 @@ fn main() {
 
     let track = pick_drum_track(smf.clone(), args.track_number).unwrap();
     let changed_track = convert_track(&track, &conversion_map);
-    // dbg!(&changed_track);
 
     smf.tracks.remove(args.track_number.unwrap_or(0));
     smf.tracks
         .insert(args.track_number.unwrap_or(0), changed_track);
+
     // write output
     smf.save(args.output_filepath).unwrap();
 }
