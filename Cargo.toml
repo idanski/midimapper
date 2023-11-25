@@ -10,3 +10,4 @@ clap = { version = "4.4.6", features = ["derive"] }
 midly = "0.5.3"
 anyhow = "1.0.75"
 regex = "1.10.2"
+walkdir = "2.4.0"

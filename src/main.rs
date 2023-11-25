@@ -34,11 +34,39 @@ struct Args {
     track_number: Option<usize>,
 }
 
-fn get_input_files(input_path: &Path) -> Result<Vec<&Path>> {
+fn get_input_files(input_path: &Path) -> Result<Vec<PathBuf>> {
     // TODO: implement
     // If is dir, walk it and add to vec
     // Else return the .midi path
-    Ok(vec![input_path])
+    let metadata = fs::metadata(input_path)?;
+
+    if metadata.is_file() {
+        return Ok(vec![PathBuf::from(input_path)]);
+    }
+    // Is dir
+    let mut result = Vec::<PathBuf>::new();
+
+    for entry in walkdir::WalkDir::new(input_path)
+        .follow_links(false)
+        .into_iter()
+        .filter_map(|e| e.ok())
+    {
+        match entry.metadata() {
+            Err(_) => continue,
+            Ok(meta) => {
+                if !meta.is_file() {
+                    continue;
+                }
+            }
+        }
+
+        if !entry.file_name().to_string_lossy().ends_with(".mid") {
+            continue;
+        }
+
+        result.push(entry.path().into())
+    }
+    Ok(result)
 }
 
 fn main() {
@@ -58,7 +86,7 @@ fn main() {
 }
 
 fn convert_files(
-    files: Vec<&Path>,
+    files: Vec<PathBuf>,
     output_dir: &Path,
     conversion_map: &HashMap<u7, u7>,
     track_number: usize,
