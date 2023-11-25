@@ -9,5 +9,6 @@
 - [ ] Verify output path != input path?
 - [ ] default input map to GM
 - [ ] default input map to invasion
+- [ ] default output dir to "./out"?
 
 
