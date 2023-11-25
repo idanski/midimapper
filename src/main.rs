@@ -1,11 +1,13 @@
 pub mod map;
 
+use anyhow::{Context, Result};
 use clap::Parser;
 use midly::{
     num::{u28, u4, u7},
     MetaMessage, MidiMessage, Smf, Track, TrackEvent, TrackEventKind,
 };
-use std::{collections::HashMap, fs, path::PathBuf, str};
+use std::{collections::HashMap, fs, path::{Path, PathBuf}, path, str};
+use log::log;
 
 #[derive(Parser)]
 struct Args {
@@ -26,6 +28,10 @@ struct Args {
     /// Channel number to convert
     #[arg(short = 'n', long)]
     track_number: Option<usize>,
+}
+
+fn get_input_files(args: Args) -> Result<Vec<PathBuf>> {
+    Ok(vec![args.input_filepath])
 }
 
 fn main() {
@@ -51,6 +57,39 @@ fn main() {
 
     // write output
     smf.save(args.output_filepath).unwrap();
+}
+
+fn convert_files(files: Vec<&Path>, output_dir: &Path, conversion_map: &HashMap<u7, u7>) {
+    // Is there a os.walk alternative?
+    for file in files.iter() {
+        let mut output_file_path = PathBuf::new();
+        output_file_path.push(output_dir);
+        let file_name = file.file_name();
+        if let None = file_name {
+            eprintln!("failed extracting file name from {file}");
+            continue
+        }
+        output_file_path.push(file_name.unwrap());
+        convert_file(file, output_dir, conversion_map)
+    }
+}
+
+fn convert_file<'a>(input_filepath: &Path, output_filepath: &Path, conversion_map: &HashMap<u7, u7>) -> Result<Track<'a>> {
+    let input = fs::read(input_filepath).context("failed reading file")?;
+    let mut smf = Smf::parse(&input).context("failed parsing midi file")?;
+
+    debug_smf(&smf);
+
+    // TODO: pass args.track_number
+    let track_num: usize = 0;
+    let track = pick_drum_track(smf.clone(), Some(track_num)).unwrap();
+    let changed_track = convert_track(&track, &conversion_map);
+
+    smf.tracks.remove(track_num);
+    smf.tracks.insert(track_num, changed_track);
+
+    // write output
+    smf.save(output_filepath).into()
 }
 
 fn convert_track<'a>(track: &'a Track, conversion_map: &HashMap<u7, u7>) -> Track<'a> {
